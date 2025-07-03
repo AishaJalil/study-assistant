@@ -1,9 +1,20 @@
 import google.generativeai as genai
+import os
+from dotenv import load_dotenv
 
-# Configure Gemini API key
-genai.configure(api_key="AIzaSyBwFia6DHVl-9Qcy2tqPymXzhxQtm4PqSA") 
+# Load API key from .env
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
 
-model = genai.GenerativeModel("gemini-1.5-flash")
+# Safety check
+if not api_key:
+    raise ValueError("GEMINI_API_KEY not found in environment variables!")
+
+# Configure Gemini API
+genai.configure(api_key=api_key)
+
+# Initialize model
+model = genai.GenerativeModel("models/gemini-1.5-flash")  # Note full model path
 
 # Function: Ask a question
 def ask_question(question: str) -> str:
@@ -20,5 +31,5 @@ def summarize_text(text: str) -> str:
 # Function: Create a study plan
 def create_study_plan(subject, days):
     prompt = f"Create a {days}-day study plan to master {subject}. Return the plan in HTML list format."
-    response = model.generate_content(prompt)
-    return response.text
+    response = model.generate_content([prompt])
+    return response.text.strip()
