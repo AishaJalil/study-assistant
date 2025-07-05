@@ -1,23 +1,11 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/templates/*",
-      "use": "@vercel/static"
+  "version": 3,
+  "builds": [{
+    "src": "api/*.py",
+    "use": "@vercel/python",
+    "config": {
+      "includeFiles": ["api/templates/**", "api/assistant.py"] 
     }
-  ],
-  "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "api/templates/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "api/index.py"
-    }
-  ]
+  }],
+  "routes": [{"src": "/(.*)", "dest": "api/index.py"}]
 }
